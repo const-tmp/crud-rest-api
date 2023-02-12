@@ -1,4 +1,4 @@
-module crud-api
+module github.com/nullc4t/crud-rest-api
 
 go 1.19
 

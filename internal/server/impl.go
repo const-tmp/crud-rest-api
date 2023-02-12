@@ -1,10 +1,11 @@
 package server
 
 import (
-	crud2 "crud-api/crud"
-	"crud-api/pkg/common"
-	"crud-api/pkg/server"
 	"github.com/labstack/echo/v4"
+	"github.com/nullc4t/crud-rest-api/crud"
+	"github.com/nullc4t/crud-rest-api/pkg/common"
+	"github.com/nullc4t/crud-rest-api/pkg/repo"
+	echoserver "github.com/nullc4t/crud-rest-api/pkg/server/echo"
 	"gorm.io/gorm"
 )
 
@@ -15,14 +16,14 @@ type (
 	}
 
 	impl struct {
-		crud *server.CRUD[crud2.User, User]
+		crud *echoserver.Server[crud.User, User]
 	}
 )
 
-func New(db *gorm.DB) crud2.ServerInterface {
-	return &impl{crud: server.New[crud2.User, User](
+func New(db *gorm.DB) crud.ServerInterface {
+	return &impl{crud: echoserver.New[crud.User, User](
 		db,
-		func(from *crud2.User) (*User, error) {
+		func(from *crud.User) (*User, error) {
 			return &User{
 				Model: common.DecodeModel(common.Model{
 					Id:        from.Id,
@@ -33,9 +34,9 @@ func New(db *gorm.DB) crud2.ServerInterface {
 				AccountID: uint(from.AccountId),
 			}, nil
 		},
-		func(from *User) (*crud2.User, error) {
+		func(from *User) (*crud.User, error) {
 			model := common.EncodeModel(from.Model)
-			return &crud2.User{
+			return &crud.User{
 				Id:        model.Id,
 				CreatedAt: model.CreatedAt,
 				UpdatedAt: model.UpdatedAt,
@@ -46,11 +47,11 @@ func New(db *gorm.DB) crud2.ServerInterface {
 	)}
 }
 
-func (i impl) GetUsers(ctx echo.Context, params crud2.GetUsersParams) error {
-	return i.crud.Get(ctx, server.GetParams{
+func (i impl) GetUsers(ctx echo.Context, params crud.GetUsersParams) error {
+	return i.crud.Get(ctx, echoserver.GetParams{
 		Offset: params.Offset,
 		Limit:  params.Limit,
-		Sort:   (*map[string]string)(params.Sort),
+		Sort:   (*repo.Sort)(params.Sort),
 	})
 }
 
@@ -58,18 +59,18 @@ func (i impl) PostUsers(ctx echo.Context) error {
 	return i.crud.Post(ctx)
 }
 
-func (i impl) DeleteUsersId(ctx echo.Context, id crud2.Id) error {
+func (i impl) DeleteUsersId(ctx echo.Context, id crud.Id) error {
 	return i.crud.DeleteID(ctx, id)
 }
 
-func (i impl) GetUsersId(ctx echo.Context, id crud2.Id) error {
+func (i impl) GetUsersId(ctx echo.Context, id crud.Id) error {
 	return i.crud.GetByID(ctx, id)
 }
 
-func (i impl) PatchUsersId(ctx echo.Context, id crud2.Id) error {
+func (i impl) PatchUsersId(ctx echo.Context, id crud.Id) error {
 	return i.crud.PatchByID(ctx, id)
 }
 
-func (i impl) PutUsersId(ctx echo.Context, id crud2.Id) error {
+func (i impl) PutUsersId(ctx echo.Context, id crud.Id) error {
 	return i.crud.PutByID(ctx, id)
 }

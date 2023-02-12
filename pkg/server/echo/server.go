@@ -1,22 +1,19 @@
-package server
+package echo
 
 import (
-	crud2 "crud-api/crud"
-	"crud-api/pkg/crud"
 	"github.com/labstack/echo/v4"
+	"github.com/nullc4t/crud-rest-api/crud"
+	"github.com/nullc4t/crud-rest-api/pkg/common"
+	"github.com/nullc4t/crud-rest-api/pkg/repo"
 	"gorm.io/gorm"
 	"net/http"
 )
 
 type (
-	TransportModel any
-
-	TransformFunc[T1, T2 any] func(*T1) (*T2, error)
-
-	CRUD[T TransportModel, D crud.DBModel] struct {
-		crud    *crud.CRUD[D]
-		decoder TransformFunc[T, D]
-		encoder TransformFunc[D, T]
+	Server[T, R any] struct {
+		repo    *repo.CRUD[R]
+		decoder common.TransformFunc[T, R]
+		encoder common.TransformFunc[R, T]
 	}
 
 	// GetParams defines parameters for Get.
@@ -28,20 +25,20 @@ type (
 		Limit *uint32 `form:"limit,omitempty" json:"limit,omitempty"`
 
 		// Sort order
-		Sort *map[string]string `form:"sort,omitempty" json:"sort,omitempty"`
+		Sort *repo.Sort `form:"sort,omitempty" json:"sort,omitempty"`
 	}
 )
 
-func New[T TransportModel, D crud.DBModel](db *gorm.DB, decoder TransformFunc[T, D], encoder TransformFunc[D, T]) *CRUD[T, D] {
-	return &CRUD[T, D]{
-		crud:    crud.New[D](db),
+func New[T, D any](db *gorm.DB, decoder common.TransformFunc[T, D], encoder common.TransformFunc[D, T]) *Server[T, D] {
+	return &Server[T, D]{
+		repo:    repo.New[D](db),
 		encoder: encoder,
 		decoder: decoder,
 	}
 }
 
-func (c CRUD[T, D]) Get(ctx echo.Context, params GetParams) error {
-	rows, err := c.crud.Get(ctx.Request().Context(), params.Offset, params.Limit, params.Sort)
+func (c Server[T, D]) Get(ctx echo.Context, params GetParams) error {
+	rows, err := c.repo.Get(ctx.Request().Context(), params.Offset, params.Limit, params.Sort)
 	if err != nil {
 		return err
 	}
@@ -58,7 +55,7 @@ func (c CRUD[T, D]) Get(ctx echo.Context, params GetParams) error {
 	return ctx.JSON(http.StatusOK, rows)
 }
 
-func (c CRUD[T, D]) Post(ctx echo.Context) error {
+func (c Server[T, D]) Post(ctx echo.Context) error {
 	var v *T
 	if err := ctx.Bind(&v); err != nil {
 		return err
@@ -69,7 +66,7 @@ func (c CRUD[T, D]) Post(ctx echo.Context) error {
 		return err
 	}
 
-	row, err = c.crud.Create(ctx.Request().Context(), *row)
+	row, err = c.repo.Create(ctx.Request().Context(), *row)
 	if err != nil {
 		return err
 	}
@@ -81,15 +78,15 @@ func (c CRUD[T, D]) Post(ctx echo.Context) error {
 	}
 }
 
-func (c CRUD[T, D]) DeleteID(ctx echo.Context, id crud2.Id) error {
-	if err := c.crud.DeleteByID(ctx.Request().Context(), uint(id)); err != nil {
+func (c Server[T, D]) DeleteID(ctx echo.Context, id crud.Id) error {
+	if err := c.repo.DeleteByID(ctx.Request().Context(), uint(id)); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-func (c CRUD[T, D]) GetByID(ctx echo.Context, id crud2.Id) error {
-	v, err := c.crud.GetByID(ctx.Request().Context(), uint(id))
+func (c Server[T, D]) GetByID(ctx echo.Context, id crud.Id) error {
+	v, err := c.repo.GetByID(ctx.Request().Context(), uint(id))
 	if err != nil {
 		return err
 	}
@@ -101,18 +98,18 @@ func (c CRUD[T, D]) GetByID(ctx echo.Context, id crud2.Id) error {
 	}
 }
 
-func (c CRUD[T, D]) PatchByID(ctx echo.Context, id crud2.Id) error {
+func (c Server[T, D]) PatchByID(ctx echo.Context, id crud.Id) error {
 	var m = make(echo.Map)
 	if err := ctx.Bind(&m); err != nil {
 		return err
 	}
-	if err := c.crud.Update(ctx.Request().Context(), uint(id), m); err != nil {
+	if err := c.repo.Update(ctx.Request().Context(), uint(id), m); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusOK)
 }
 
-func (c CRUD[T, D]) PutByID(ctx echo.Context, id crud2.Id) error {
+func (c Server[T, D]) PutByID(ctx echo.Context, id crud.Id) error {
 	var v T
 	if err := ctx.Bind(&v); err != nil {
 		return err
@@ -123,7 +120,7 @@ func (c CRUD[T, D]) PutByID(ctx echo.Context, id crud2.Id) error {
 		return err
 	}
 
-	if err := c.crud.Replace(ctx.Request().Context(), uint(id), *row); err != nil {
+	if err = c.repo.Replace(ctx.Request().Context(), uint(id), *row); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusOK)

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"crud-api/crud"
-	"crud-api/internal/server"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/nullc4t/crud-rest-api/crud"
+	"github.com/nullc4t/crud-rest-api/internal/server"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

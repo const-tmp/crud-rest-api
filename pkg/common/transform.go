@@ -5,12 +5,16 @@ import (
 	"time"
 )
 
-type Model struct {
-	Id        *uint64    `json:"id,omitempty"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-}
+type (
+	TransformFunc[T1, T2 any] func(*T1) (*T2, error)
+
+	Model struct {
+		Id        *uint64    `json:"id,omitempty"`
+		CreatedAt *time.Time `json:"created_at,omitempty"`
+		UpdatedAt *time.Time `json:"updated_at,omitempty"`
+		DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	}
+)
 
 func EncodeModel(from gorm.Model) Model {
 	id := uint64(from.ID)

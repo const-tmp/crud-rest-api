@@ -1,4 +1,4 @@
-package crud
+package repo
 
 import (
 	"context"
@@ -8,20 +8,16 @@ import (
 type (
 	Sort map[string]string
 
-	DBModel interface {
-		//gorm.Model
-	}
-
-	CRUD[T DBModel] struct {
+	CRUD[T any] struct {
 		db *gorm.DB
 	}
 )
 
-func New[T DBModel](db *gorm.DB) *CRUD[T] {
+func New[T any](db *gorm.DB) *CRUD[T] {
 	return &CRUD[T]{db: db}
 }
 
-func (c CRUD[T]) Get(ctx context.Context, offset, limit *uint32, sort *map[string]string) ([]*T, error) {
+func (c CRUD[T]) Get(ctx context.Context, offset, limit *uint32, sort *Sort) ([]*T, error) {
 	var (
 		v    []*T
 		stmt = c.db.WithContext(ctx)
@@ -37,7 +33,7 @@ func (c CRUD[T]) Get(ctx context.Context, offset, limit *uint32, sort *map[strin
 
 	if sort != nil {
 		for col, dir := range *sort {
-			stmt = stmt.Order(col + " " + string(dir))
+			stmt = stmt.Order(col + " " + dir)
 		}
 	}
 
@@ -72,11 +68,9 @@ func (c CRUD[T]) GetByID(ctx context.Context, id uint) (*T, error) {
 
 func (c CRUD[T]) Update(ctx context.Context, id uint, m map[string]any) error {
 	var v T
-	//v.ID = id
 	return c.db.WithContext(ctx).Model(&v).Where("id = ?", id).Updates(m).Error
 }
 
 func (c CRUD[T]) Replace(ctx context.Context, id uint, v T) error {
-	//v.ID = id
 	return c.db.WithContext(ctx).Model(&v).Where("id = ?", id).Select("*").Updates(v).Error
 }
