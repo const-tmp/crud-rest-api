@@ -3,9 +3,9 @@ package resource
 import (
 	"errors"
 	"fmt"
+	"github.com/nullc4t/crud-rest-api/internal/generator/openapi/paths"
 	"github.com/nullc4t/crud-rest-api/pkg/common"
 	"github.com/nullc4t/crud-rest-api/pkg/generator"
-	"github.com/nullc4t/crud-rest-api/pkg/generator/openapi/paths"
 	"gopkg.in/yaml.v3"
 	"os"
 )

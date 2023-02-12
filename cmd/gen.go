@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/nullc4t/crud-rest-api/internal/generator/resource"
+	"github.com/nullc4t/crud-rest-api/internal/generator/openapi/resource"
 	"github.com/nullc4t/crud-rest-api/pkg/generator"
 	"github.com/spf13/cobra"
 	"log"
