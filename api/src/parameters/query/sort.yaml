@@ -1,0 +1,9 @@
+name: sort
+in: query
+required: false
+description: Sort order
+schema:
+  type: object
+  additionalProperties:
+    type: string
+    enum: [ asc, desc ]

@@ -1,0 +1,13 @@
+BaseModel:
+  $ref: "./BaseModel.yaml"
+Error:
+  $ref: "./Error.yaml"
+Any:
+  $ref: "./Any.yaml"
+AnyNull:
+  $ref: "./AnyNull.yaml"
+
+User:
+  $ref: "./User.yaml"
+Pet:
+  $ref: "./Pet.yaml"

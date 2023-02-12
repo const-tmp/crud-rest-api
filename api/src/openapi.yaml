@@ -1,0 +1,34 @@
+openapi: 3.0.3
+
+info:
+  title: CRUD API
+  description: CRUD API
+  version: 1.0.0
+
+servers:
+  - url: 'http://localhost:8080'
+    description: 'dev'
+
+paths:
+  /users:
+    get:
+      $ref: ./paths/users/get.yaml
+    post:
+      $ref: ./paths/users/post.yaml
+  /users/{id}:
+    get:
+      $ref: ./paths/users/{id}/get.yaml
+    delete:
+      $ref: ./paths/users/{id}/delete.yaml
+    put:
+      $ref: ./paths/users/{id}/put.yaml
+    patch:
+      $ref: ./paths/users/{id}/patch.yaml
+
+components:
+  parameters:
+    $ref: "./parameters/_index.yaml"
+  responses:
+    $ref: "./responses/_index.yaml"
+  schemas:
+    $ref: "./schemas/_index.yaml"
