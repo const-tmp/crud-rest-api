@@ -1,4 +1,6 @@
-summary: Get user by ID
+summary: Get User by ID
+tags:
+  - User
 description: Optional extended description in CommonMark or HTML
 parameters:
   - $ref: '../../../parameters/path/id.yaml'

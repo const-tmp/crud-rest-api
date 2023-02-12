@@ -9,5 +9,3 @@ AnyNull:
 
 User:
   $ref: "./User.yaml"
-Pet:
-  $ref: "./Pet.yaml"

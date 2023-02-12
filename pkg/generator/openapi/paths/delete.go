@@ -1,6 +1,14 @@
-summary: Delete User by ID
+package paths
+
+import (
+	"github.com/nullc4t/crud-rest-api/pkg/generator"
+	"io"
+)
+
+func Delete(dot generator.ResourceTemplate) (io.Reader, error) {
+	return generator.RenderTemplate("delete", `summary: Delete {{ .Schema }} by ID
 tags:
-  - User
+  - {{ .Tag }}
 description: Optional extended description in CommonMark or HTML
 parameters:
   - $ref: '../../../parameters/path/id.yaml'
@@ -11,3 +19,5 @@ responses:
     $ref: '../../../responses/Unauthorized.yaml'
   404:
     $ref: '../../../responses/NotFound.yaml'
+`, dot)
+}

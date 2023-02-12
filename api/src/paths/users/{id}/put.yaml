@@ -1,4 +1,6 @@
-summary: Replace if exists User by ID
+summary: Replace User if exists
+tags:
+  - User
 description: Optional extended description in CommonMark or HTML
 parameters:
   - $ref: '../../../parameters/path/id.yaml'
