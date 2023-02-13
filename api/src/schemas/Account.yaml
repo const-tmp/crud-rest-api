@@ -2,8 +2,9 @@ allOf:
   - $ref: './BaseModel.yaml'
   - type: object
     required:
-      - account_id
+      - name
     properties:
-      account_id:
-        type: integer
-        format: uint64
+      name:
+        type: string
+      blocked:
+        type: boolean

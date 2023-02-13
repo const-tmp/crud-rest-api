@@ -2,7 +2,6 @@ package echo
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/nullc4t/crud-rest-api/crud"
 	"github.com/nullc4t/crud-rest-api/pkg/common"
 	"github.com/nullc4t/crud-rest-api/pkg/repo"
 	"gorm.io/gorm"
@@ -43,7 +42,7 @@ func (c Server[T, D]) Get(ctx echo.Context, params GetParams) error {
 		return err
 	}
 
-	result := make([]*T, len(rows))
+	result := make([]*T, 0, len(rows))
 	for _, row := range rows {
 		if res, err := c.encoder(row); err != nil {
 			return err
@@ -52,7 +51,7 @@ func (c Server[T, D]) Get(ctx echo.Context, params GetParams) error {
 		}
 	}
 
-	return ctx.JSON(http.StatusOK, rows)
+	return ctx.JSON(http.StatusOK, result)
 }
 
 func (c Server[T, D]) Post(ctx echo.Context) error {
@@ -78,14 +77,14 @@ func (c Server[T, D]) Post(ctx echo.Context) error {
 	}
 }
 
-func (c Server[T, D]) DeleteID(ctx echo.Context, id crud.Id) error {
+func (c Server[T, D]) DeleteID(ctx echo.Context, id uint64) error {
 	if err := c.repo.DeleteByID(ctx.Request().Context(), uint(id)); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-func (c Server[T, D]) GetByID(ctx echo.Context, id crud.Id) error {
+func (c Server[T, D]) GetByID(ctx echo.Context, id uint64) error {
 	v, err := c.repo.GetByID(ctx.Request().Context(), uint(id))
 	if err != nil {
 		return err
@@ -98,7 +97,7 @@ func (c Server[T, D]) GetByID(ctx echo.Context, id crud.Id) error {
 	}
 }
 
-func (c Server[T, D]) PatchByID(ctx echo.Context, id crud.Id) error {
+func (c Server[T, D]) PatchByID(ctx echo.Context, id uint64) error {
 	var m = make(echo.Map)
 	if err := ctx.Bind(&m); err != nil {
 		return err
@@ -109,7 +108,7 @@ func (c Server[T, D]) PatchByID(ctx echo.Context, id crud.Id) error {
 	return ctx.NoContent(http.StatusOK)
 }
 
-func (c Server[T, D]) PutByID(ctx echo.Context, id crud.Id) error {
+func (c Server[T, D]) PutByID(ctx echo.Context, id uint64) error {
 	var v T
 	if err := ctx.Bind(&v); err != nil {
 		return err

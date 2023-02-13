@@ -1,12 +1,12 @@
-summary: Get User by ID
+summary: Get Account by ID
 tags:
-  - User
+  - Account
 description: Optional extended description in CommonMark or HTML
 parameters:
   - $ref: '../../../parameters/path/id.yaml'
 responses:
   200:
-    description: User object
+    description: Account object
     content:
       application/json:
         schema:

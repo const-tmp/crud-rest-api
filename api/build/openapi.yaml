@@ -7,11 +7,11 @@ servers:
   - url: 'http://localhost:8080'
     description: dev
 paths:
-  /users:
+  /accounts:
     get:
-      summary: Return list of User
+      summary: Return list of Account
       tags:
-        - User
+        - Account
       description: Optional extended description in CommonMark or HTML
       parameters:
         - $ref: '#/components/parameters/offset'
@@ -19,24 +19,24 @@ paths:
         - $ref: '#/components/parameters/sort'
       responses:
         '200':
-          description: A JSON array of User
+          description: A JSON array of Account
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/Account'
     post:
-      summary: Create User
+      summary: Create Account
       tags:
-        - User
+        - Account
       description: Optional extended description in CommonMark or HTML
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Account'
       responses:
         '201':
           $ref: '#/components/responses/Created'
@@ -44,11 +44,11 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-  '/users/{id}':
+  '/accounts/{id}':
     delete:
-      summary: Delete User by ID
+      summary: Delete Account by ID
       tags:
-        - User
+        - Account
       description: Optional extended description in CommonMark or HTML
       parameters:
         - $ref: '#/components/parameters/id'
@@ -60,27 +60,27 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
     get:
-      summary: Get User by ID
+      summary: Get Account by ID
       tags:
-        - User
+        - Account
       description: Optional extended description in CommonMark or HTML
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         '200':
-          description: User object
+          description: Account object
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Account'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     patch:
-      summary: Update specified fields of User
+      summary: Update specified fields of Account
       tags:
-        - User
+        - Account
       description: Optional extended description in CommonMark or HTML
       parameters:
         - $ref: '#/components/parameters/id'
@@ -89,7 +89,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Account'
       responses:
         '200':
           $ref: '#/components/responses/OK'
@@ -98,9 +98,9 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
     put:
-      summary: Replace User if exists
+      summary: Replace Account if exists
       tags:
-        - User
+        - Account
       description: Optional extended description in CommonMark or HTML
       parameters:
         - $ref: '#/components/parameters/id'
@@ -109,7 +109,227 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Account'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /permissions:
+    get:
+      summary: Return list of Permission
+      tags:
+        - Permissions
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: A JSON array of Permission
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+    post:
+      summary: Create Permission
+      tags:
+        - Permissions
+      description: Optional extended description in CommonMark or HTML
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  '/permissions/{id}':
+    delete:
+      summary: Delete Permission by ID
+      tags:
+        - Permissions
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      summary: Get Permission by ID
+      tags:
+        - Permissions
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Permission object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update specified fields of Permission
+      tags:
+        - Permissions
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Replace Permission if exists
+      tags:
+        - Permissions
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /services:
+    get:
+      summary: Return list of Service
+      tags:
+        - Service
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: A JSON array of Service
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+    post:
+      summary: Create Service
+      tags:
+        - Service
+      description: Optional extended description in CommonMark or HTML
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  '/services/{id}':
+    delete:
+      summary: Delete Service by ID
+      tags:
+        - Service
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      summary: Get Service by ID
+      tags:
+        - Service
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Service object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update specified fields of Service
+      tags:
+        - Service
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Replace Service if exists
+      tags:
+        - Service
+      description: Optional extended description in CommonMark or HTML
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
       responses:
         '200':
           $ref: '#/components/responses/OK'
@@ -193,6 +413,21 @@ components:
     NoContent:
       description: No content
   schemas:
+    Account:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+            blocked:
+              type: boolean
+    Any:
+      description: 'Can be any value - string, number, boolean, array or object.'
+    AnyNull:
+      description: 'Can be any value - string, number, boolean, array, object or null.'
     BaseModel:
       type: object
       required:
@@ -228,17 +463,30 @@ components:
           format: int32
         message:
           type: string
-    Any:
-      description: 'Can be any value - string, number, boolean, array or object.'
-    AnyNull:
-      description: 'Can be any value - string, number, boolean, array, object or null.'
-    User:
+    Permission:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
           required:
+            - name
             - account_id
+            - service_id
+            - user_id
           properties:
+            name:
+              type: string
             account_id:
               type: integer
-              format: uint64
+            service_id:
+              type: integer
+            user_id:
+              type: integer
+    Service:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string

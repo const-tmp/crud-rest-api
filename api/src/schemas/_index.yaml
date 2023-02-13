@@ -1,3 +1,5 @@
+Account:
+    $ref: ./Account.yaml
 Any:
     $ref: ./Any.yaml
 AnyNull:
@@ -6,6 +8,7 @@ BaseModel:
     $ref: ./BaseModel.yaml
 Error:
     $ref: ./Error.yaml
-User:
-    $ref: ./User.yaml
-
+Permission:
+    $ref: ./Permission.yaml
+Service:
+    $ref: ./Service.yaml

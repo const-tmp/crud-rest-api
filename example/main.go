@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/nullc4t/crud-rest-api/crud"
 	"github.com/nullc4t/crud-rest-api/internal/server"
+	"github.com/nullc4t/crud-rest-api/pkg/auth"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -45,13 +45,12 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	if err = db.AutoMigrate(&server.User{}); err != nil {
+	if err = db.AutoMigrate(&server.Account{}, &server.Service{}, &server.Permission{}); err != nil {
 		e.Logger.Fatal(err)
 	}
 
 	impl := server.New(db)
-	crud.RegisterHandlers(e, impl)
+	auth.RegisterHandlers(e, impl)
 
 	e.Logger.Fatal(e.Start(":8080"))
-
 }

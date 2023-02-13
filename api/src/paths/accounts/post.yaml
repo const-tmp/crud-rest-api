@@ -1,6 +1,6 @@
-summary: Create User
+summary: Create Account
 tags:
-  - User
+  - Account
 description: Optional extended description in CommonMark or HTML
 requestBody:
   required: true

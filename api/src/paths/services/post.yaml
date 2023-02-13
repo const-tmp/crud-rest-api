@@ -1,13 +1,13 @@
-summary: Create User
+summary: Create Service
 tags:
-  - User
+  - Service
 description: Optional extended description in CommonMark or HTML
 requestBody:
   required: true
   content:
     application/json:
       schema:
-        $ref: '../../schemas/Account.yaml'
+        $ref: '../../schemas/Service.yaml'
 responses:
   201:
     $ref: '../../responses/Created.yaml'

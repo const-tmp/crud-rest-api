@@ -9,7 +9,7 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: '../../../schemas/User.yaml'
+        $ref: '../../../schemas/Account.yaml'
 responses:
   200:
     $ref: '../../../responses/OK.yaml'

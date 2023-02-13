@@ -22,7 +22,9 @@ var genCmd = &cobra.Command{
 		}
 
 		resources := []openapi.TemplateData{
-			{Schema: "User", Resource: "users", Tag: "User"},
+			{Schema: "Account", Resource: "accounts", Tag: "Account"},
+			{Schema: "Service", Resource: "services", Tag: "Service"},
+			{Schema: "Permission", Resource: "permissions", Tag: "Permissions"},
 		}
 
 		if err := openapi.Generate(srcPath, resources); err != nil {

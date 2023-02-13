@@ -7,20 +7,48 @@ servers:
     - url: http://localhost:8080
       description: dev
 paths:
-    /users:
+    /accounts:
         get:
-            $ref: ./paths/users/get.yaml
+            $ref: ./paths/accounts/get.yaml
         post:
-            $ref: ./paths/users/post.yaml
-    /users/{id}:
+            $ref: ./paths/accounts/post.yaml
+    /accounts/{id}:
         delete:
-            $ref: ./paths/users/{id}/delete.yaml
+            $ref: ./paths/accounts/{id}/delete.yaml
         get:
-            $ref: ./paths/users/{id}/get.yaml
+            $ref: ./paths/accounts/{id}/get.yaml
         patch:
-            $ref: ./paths/users/{id}/patch.yaml
+            $ref: ./paths/accounts/{id}/patch.yaml
         put:
-            $ref: ./paths/users/{id}/put.yaml
+            $ref: ./paths/accounts/{id}/put.yaml
+    /permissions:
+        get:
+            $ref: ./paths/permissions/get.yaml
+        post:
+            $ref: ./paths/permissions/post.yaml
+    /permissions/{id}:
+        delete:
+            $ref: ./paths/permissions/{id}/delete.yaml
+        get:
+            $ref: ./paths/permissions/{id}/get.yaml
+        patch:
+            $ref: ./paths/permissions/{id}/patch.yaml
+        put:
+            $ref: ./paths/permissions/{id}/put.yaml
+    /services:
+        get:
+            $ref: ./paths/services/get.yaml
+        post:
+            $ref: ./paths/services/post.yaml
+    /services/{id}:
+        delete:
+            $ref: ./paths/services/{id}/delete.yaml
+        get:
+            $ref: ./paths/services/{id}/get.yaml
+        patch:
+            $ref: ./paths/services/{id}/patch.yaml
+        put:
+            $ref: ./paths/services/{id}/put.yaml
 components:
     parameters:
         $ref: ./parameters/_index.yaml

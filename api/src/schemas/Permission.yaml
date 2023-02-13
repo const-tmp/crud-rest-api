@@ -1,0 +1,17 @@
+allOf:
+  - $ref: './BaseModel.yaml'
+  - type: object
+    required:
+      - name
+      - account_id
+      - service_id
+      - user_id
+    properties:
+      name:
+        type: string
+      account_id:
+        type: integer
+      service_id:
+        type: integer
+      user_id:
+        type: integer

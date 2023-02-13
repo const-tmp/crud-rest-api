@@ -1,6 +1,6 @@
-summary: Return list of User
+summary: Return list of Permission
 tags:
-  - User
+  - Permissions
 description: Optional extended description in CommonMark or HTML
 parameters:
   - $ref: '../../parameters/query/offset.yaml'
@@ -8,10 +8,10 @@ parameters:
   - $ref: '../../parameters/query/sort.yaml'
 responses:
   200:
-    description: A JSON array of User
+    description: A JSON array of Permission
     content:
       application/json:
         schema:
           type: array
           items:
-            $ref: '../../schemas/Account.yaml'
+            $ref: '../../schemas/Permission.yaml'

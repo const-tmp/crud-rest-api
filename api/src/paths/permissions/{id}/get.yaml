@@ -1,16 +1,16 @@
-summary: Get User by ID
+summary: Get Permission by ID
 tags:
-  - User
+  - Permissions
 description: Optional extended description in CommonMark or HTML
 parameters:
   - $ref: '../../../parameters/path/id.yaml'
 responses:
   200:
-    description: User object
+    description: Permission object
     content:
       application/json:
         schema:
-          $ref: '../../../schemas/Account.yaml'
+          $ref: '../../../schemas/Permission.yaml'
   401:
     $ref: '../../../responses/Unauthorized.yaml'
   404:
