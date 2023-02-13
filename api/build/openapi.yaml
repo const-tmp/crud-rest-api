@@ -9,7 +9,7 @@ servers:
 paths:
   /users:
     get:
-      summary: Returns a list of User
+      summary: Return list of User
       tags:
         - User
       description: Optional extended description in CommonMark or HTML

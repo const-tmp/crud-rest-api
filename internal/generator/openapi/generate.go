@@ -1,16 +1,29 @@
-package resource
+package openapi
 
 import (
 	"errors"
 	"fmt"
-	"github.com/nullc4t/crud-rest-api/internal/generator/openapi/paths"
 	"github.com/nullc4t/crud-rest-api/pkg/common"
 	"github.com/nullc4t/crud-rest-api/pkg/generator"
 	"gopkg.in/yaml.v3"
+	"io"
 	"os"
 )
 
-func Generate(src string, resources []generator.ResourceTemplate) error {
+type (
+	TemplateData struct {
+		Schema   string
+		Resource string
+		Tag      string
+	}
+
+	RenderUnit struct {
+		Template func(dot TemplateData) (io.Reader, error)
+		Path     string
+	}
+)
+
+func Generate(src string, resources []TemplateData) error {
 	spec, err := ReadSpec(src + "openapi.yaml")
 	if err != nil {
 		return err
@@ -18,7 +31,7 @@ func Generate(src string, resources []generator.ResourceTemplate) error {
 
 	for _, resource := range resources {
 		if _, err = os.Open(src + "schemas/" + resource.Schema + ".yaml"); errors.Is(err, os.ErrNotExist) {
-			return err
+			return fmt.Errorf("%s: %w", src+"schemas/"+resource.Schema+".yaml", err)
 		}
 
 		resourcePath := src + "paths/" + resource.Resource
@@ -62,14 +75,14 @@ func ReadSpec(path string) (*common.OpenAPI3, error) {
 	return spec, nil
 }
 
-func GenerateResource(resource generator.ResourceTemplate, path string) error {
-	units := []generator.RenderUnit{
-		{paths.Get, path + "/get.yaml"},
-		{paths.Post, path + "/post.yaml"},
-		{paths.GetByID, path + "/{id}/get.yaml"},
-		{paths.Put, path + "/{id}/put.yaml"},
-		{paths.Patch, path + "/{id}/patch.yaml"},
-		{paths.Delete, path + "/{id}/delete.yaml"},
+func GenerateResource(resource TemplateData, path string) error {
+	units := []RenderUnit{
+		{Get, path + "/get.yaml"},
+		{Post, path + "/post.yaml"},
+		{GetByID, path + "/{id}/get.yaml"},
+		{Put, path + "/{id}/put.yaml"},
+		{Patch, path + "/{id}/patch.yaml"},
+		{Delete, path + "/{id}/delete.yaml"},
 	}
 	for _, unit := range units {
 		if reader, err := unit.Template(resource); err != nil {
@@ -84,18 +97,18 @@ func GenerateResource(resource generator.ResourceTemplate, path string) error {
 	return nil
 }
 
-func AddPaths(d common.OpenAPI3, resourceName string) {
-	path := "./paths/" + resourceName
+func AddPaths(spec common.OpenAPI3, resourceName string) {
+	resourcePath := "./paths/" + resourceName
 
-	d.Paths["/"+resourceName] = map[string]common.Ref{
-		"get":  {Ref: path + "/get.yaml"},
-		"post": {Ref: path + "/post.yaml"},
+	spec.Paths["/"+resourceName] = map[string]common.Ref{
+		"get":  {Ref: resourcePath + "/get.yaml"},
+		"post": {Ref: resourcePath + "/post.yaml"},
 	}
 
-	d.Paths["/"+resourceName+"/{id}"] = map[string]common.Ref{
-		"get":    {Ref: path + "/{id}/get.yaml"},
-		"put":    {Ref: path + "/{id}/put.yaml"},
-		"patch":  {Ref: path + "/{id}/patch.yaml"},
-		"delete": {Ref: path + "/{id}/delete.yaml"},
+	spec.Paths["/"+resourceName+"/{id}"] = map[string]common.Ref{
+		"get":    {Ref: resourcePath + "/{id}/get.yaml"},
+		"put":    {Ref: resourcePath + "/{id}/put.yaml"},
+		"patch":  {Ref: resourcePath + "/{id}/patch.yaml"},
+		"delete": {Ref: resourcePath + "/{id}/delete.yaml"},
 	}
 }

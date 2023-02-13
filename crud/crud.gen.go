@@ -1078,7 +1078,7 @@ func ParsePutUsersIdResponse(rsp *http.Response) (*PutUsersIdResponse, error) {
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Returns a list of User
+	// Return list of User
 	// (GET /users)
 	GetUsers(ctx echo.Context, params GetUsersParams) error
 	// Create User
@@ -1260,11 +1260,11 @@ var swaggerSpec = []string{
 	"zNaGv2wSasBd17mupfd5XoX3rE1u+710eH5xJN6dHXsIzQV2f7pBcjHu1d54b+yvbCs0stKQwpu98d4b",
 	"SML0DHcY1a4dx9OhkTOpoocL/MFoFCqx9l1oIw5tWVpzIum7sCQ+fD75EwIehU4+VpDCe+SLAJJ0FoAN",
 	"hV+FjNoR5gv/QGQctFsEhjHVXN0ZJq/H40e5UZi/D9lSeGerSSaJ5HzIpd6JPz5NTkX47hefmOfdqi5L",
-	"SfNgs37hcEKKQjteBiXAcuorGd/0VZNAZd2OVDyzbiljOwwPrJo/m4u3127urnFNT6tXm45axo3WpuZ+",
-	"1Pb++LVtIqRsAdEfLku5IvoGjZqk7bnRrVZN1Mq7525UOwpnB92O1aMbUKuhXtl/uDirVeXfldMnbQXT",
-	"Ljrd+sdLh/qLr3NxfDTUKTu3u2er93gHPXZnUfKVWk3IFxfsPfIDalWSs9mOjM0f/WTF/ktD3MLg4vr9",
-	"4sJehC1RuAoznWtUItdYKHfvBKt3NcBq/l/lnah8jlUhs9ZwdS7wh3bsBkafz0K6WVS9q7HCG///Ciog",
-	"hRlzlY5Ghc1kMbOO07fjt2O/FP8TAAD//7YSfidSEgAA",
+	"SfNgs2HhKLTjZUQCLKe+jPFBXzUJVNbtSMIz65YatpPwwKr5s1l4e+fm7g7X9IR6temoZdxobWTuR2Hv",
+	"j19bJULKFhD9ybLUKqJv0KhJ2oYb3WrVRK28de5GtaNwdtDtWD26+7QaapT9h4uz2lP+XTl90lYw7ZbT",
+	"rX+8dKi/+DoXx0dDnbJzr3u2eo930GN3tiRfqdV4fHHB3iM/oFYlOZvtyNj80U9W7L80xC0MLu7eLy7s",
+	"RVgRhasw07lGJXKNhXL3TrB6VwOs5v9V3onK51gVMmsNV+cCf2jHbmD0+Sykm0XVuxorvPH/qaACUpgx",
+	"V+loVNhMFjPrOH07fjv2G/E/AQAA//8UE4RATxIAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

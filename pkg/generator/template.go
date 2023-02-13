@@ -7,20 +7,7 @@ import (
 	"text/template"
 )
 
-type (
-	RenderUnit struct {
-		Template func(dot ResourceTemplate) (io.Reader, error)
-		Path     string
-	}
-
-	ResourceTemplate struct {
-		Schema   string
-		Resource string
-		Tag      string
-	}
-)
-
-func RenderTemplate(name, text string, dot ResourceTemplate) (io.Reader, error) {
+func RenderTemplate(name, text string, dot any) (io.Reader, error) {
 	tmpl, err := template.New(name).Parse(text)
 	if err != nil {
 		return nil, err

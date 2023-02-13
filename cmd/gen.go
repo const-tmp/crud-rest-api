@@ -2,8 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/nullc4t/crud-rest-api/internal/generator/openapi/resource"
-	"github.com/nullc4t/crud-rest-api/pkg/generator"
+	"github.com/nullc4t/crud-rest-api/internal/generator/openapi"
 	"github.com/spf13/cobra"
 	"log"
 	"strings"
@@ -22,11 +21,11 @@ var genCmd = &cobra.Command{
 			srcPath += "/"
 		}
 
-		resources := []generator.ResourceTemplate{
+		resources := []openapi.TemplateData{
 			{Schema: "User", Resource: "users", Tag: "User"},
 		}
 
-		if err := resource.Generate(srcPath, resources); err != nil {
+		if err := openapi.Generate(srcPath, resources); err != nil {
 			log.Fatal(err)
 		}
 	},
