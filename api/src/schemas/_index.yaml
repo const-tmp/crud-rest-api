@@ -1,11 +1,11 @@
-BaseModel:
-  $ref: "./BaseModel.yaml"
-Error:
-  $ref: "./Error.yaml"
 Any:
-  $ref: "./Any.yaml"
+    $ref: ./Any.yaml
 AnyNull:
-  $ref: "./AnyNull.yaml"
-
+    $ref: ./AnyNull.yaml
+BaseModel:
+    $ref: ./BaseModel.yaml
+Error:
+    $ref: ./Error.yaml
 User:
-  $ref: "./User.yaml"
+    $ref: ./User.yaml
+

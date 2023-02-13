@@ -29,10 +29,18 @@ func Generate(src string, resources []TemplateData) error {
 		return err
 	}
 
+	index, err := ReadSchemaIndex(src + "schemas/_index.yaml")
+	if err != nil {
+		return err
+	}
+
 	for _, resource := range resources {
-		if _, err = os.Open(src + "schemas/" + resource.Schema + ".yaml"); errors.Is(err, os.ErrNotExist) {
-			return fmt.Errorf("%s: %w", src+"schemas/"+resource.Schema+".yaml", err)
+		schemaPath := src + "schemas/" + resource.Schema + ".yaml"
+		if _, err = os.Open(schemaPath); errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("%s: %w", schemaPath, err)
 		}
+
+		index[resource.Schema] = common.Ref{Ref: fmt.Sprintf("./%s.yaml", resource.Schema)}
 
 		resourcePath := src + "paths/" + resource.Resource
 
@@ -47,14 +55,26 @@ func Generate(src string, resources []TemplateData) error {
 		AddPaths(*spec, resource.Resource)
 	}
 
-	file, err := os.OpenFile(src+"openapi.yaml", os.O_WRONLY, 0644)
-	if err != nil {
+	if err = WriteYAMLFile(src+"openapi.yaml", spec); err != nil {
 		return err
+	}
+
+	if err = WriteYAMLFile(src+"schemas/_index.yaml", index); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func WriteYAMLFile(path string, obj any) error {
+	file, err := os.OpenFile(path, os.O_WRONLY, 0644)
+	if err != nil {
+		return fmt.Errorf("open %s error: %w", path, err)
 	}
 	defer file.Close()
 
-	if err = yaml.NewEncoder(file).Encode(spec); err != nil {
-		return err
+	if err = yaml.NewEncoder(file).Encode(obj); err != nil {
+		return fmt.Errorf("encode YAML to %s error: %w", path, err)
 	}
 
 	return nil
@@ -63,16 +83,31 @@ func Generate(src string, resources []TemplateData) error {
 func ReadSpec(path string) (*common.OpenAPI3, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read %s error: %w", path, err)
 	}
 
 	spec := new(common.OpenAPI3)
 
 	if err = yaml.Unmarshal(data, spec); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unmarshal YAML %s error: %w", path, err)
 	}
 
 	return spec, nil
+}
+
+func ReadSchemaIndex(path string) (map[string]common.Ref, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read %s error: %w", path, err)
+	}
+
+	index := make(map[string]common.Ref)
+
+	if err = yaml.Unmarshal(data, index); err != nil {
+		return nil, fmt.Errorf("unmarshal YAML %s error: %w", path, err)
+	}
+
+	return index, nil
 }
 
 func GenerateResource(resource TemplateData, path string) error {
