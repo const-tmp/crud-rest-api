@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -19,8 +16,8 @@ var bootstrapCmd = &cobra.Command{
 	Long:    `Bootstrap OpenAPI 3 files in specified path or CWD if omitted`,
 	Example: `bootstrap
 bootstrap .
-bootstrap desired/path
-bootstrap /home/user/desired/path
+bootstrap path/to/dir
+bootstrap /abs/path/to/dir
 `,
 	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {

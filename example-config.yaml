@@ -1,0 +1,9 @@
+- schema: Account
+  resource: accounts
+  tag: Account
+- schema: Service
+  resource: services
+  tag: Service
+- schema: Permission
+  resource: permissions
+  tag: Permissions

@@ -12,9 +12,9 @@ import (
 
 type (
 	TemplateData struct {
-		Schema   string
-		Resource string
-		Tag      string
+		Schema   string `yaml:"schema"`
+		Resource string `yaml:"resource"`
+		Tag      string `yaml:"tag"`
 	}
 
 	RenderUnit struct {
@@ -110,6 +110,21 @@ func ReadSchemaIndex(path string) (map[string]common.Ref, error) {
 	return index, nil
 }
 
+func ReadTemplateData(path string) ([]TemplateData, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read %s error: %w", path, err)
+	}
+
+	var td []TemplateData
+
+	if err = yaml.Unmarshal(data, &td); err != nil {
+		return nil, fmt.Errorf("unmarshal YAML %s error: %w", path, err)
+	}
+
+	return td, nil
+}
+
 func GenerateResource(resource TemplateData, path string) error {
 	units := []RenderUnit{
 		{Get, path + "/get.yaml"},
@@ -135,15 +150,27 @@ func GenerateResource(resource TemplateData, path string) error {
 func AddPaths(spec common.OpenAPI3, resourceName string) {
 	resourcePath := "./paths/" + resourceName
 
-	spec.Paths["/"+resourceName] = map[string]common.Ref{
-		"get":  {Ref: resourcePath + "/get.yaml"},
-		"post": {Ref: resourcePath + "/post.yaml"},
+	if path, ok := spec.Paths["/"+resourceName]; ok {
+		path["get"] = common.Ref{Ref: resourcePath + "/get.yaml"}
+		path["post"] = common.Ref{Ref: resourcePath + "/post.yaml"}
+	} else {
+		spec.Paths["/"+resourceName] = map[string]common.Ref{
+			"get":  {Ref: resourcePath + "/get.yaml"},
+			"post": {Ref: resourcePath + "/post.yaml"},
+		}
 	}
 
-	spec.Paths["/"+resourceName+"/{id}"] = map[string]common.Ref{
-		"get":    {Ref: resourcePath + "/{id}/get.yaml"},
-		"put":    {Ref: resourcePath + "/{id}/put.yaml"},
-		"patch":  {Ref: resourcePath + "/{id}/patch.yaml"},
-		"delete": {Ref: resourcePath + "/{id}/delete.yaml"},
+	if path, ok := spec.Paths["/"+resourceName+"/{id}"]; ok {
+		path["get"] = common.Ref{Ref: resourcePath + "/{id}/get.yaml"}
+		path["put"] = common.Ref{Ref: resourcePath + "/{id}/put.yaml"}
+		path["patch"] = common.Ref{Ref: resourcePath + "/{id}/patch.yaml"}
+		path["delete"] = common.Ref{Ref: resourcePath + "/{id}/delete.yaml"}
+	} else {
+		spec.Paths["/"+resourceName+"/{id}"] = map[string]common.Ref{
+			"get":    {Ref: resourcePath + "/{id}/get.yaml"},
+			"put":    {Ref: resourcePath + "/{id}/put.yaml"},
+			"patch":  {Ref: resourcePath + "/{id}/patch.yaml"},
+			"delete": {Ref: resourcePath + "/{id}/delete.yaml"},
+		}
 	}
 }
