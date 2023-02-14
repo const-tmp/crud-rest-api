@@ -10,7 +10,7 @@ import (
 
 type (
 	Server[T, R any] struct {
-		repo    *repo.CRUD[R]
+		db      *gorm.DB
 		decoder common.TransformFunc[T, R]
 		encoder common.TransformFunc[R, T]
 	}
@@ -28,23 +28,23 @@ type (
 	}
 )
 
-func New[T, D any](db *gorm.DB, decoder common.TransformFunc[T, D], encoder common.TransformFunc[D, T]) *Server[T, D] {
-	return &Server[T, D]{
-		repo:    repo.New[D](db),
+func New[T, R any](db *gorm.DB, decoder common.TransformFunc[T, R], encoder common.TransformFunc[R, T]) *Server[T, R] {
+	return &Server[T, R]{
+		db:      db,
 		encoder: encoder,
 		decoder: decoder,
 	}
 }
 
-func (c Server[T, D]) Get(ctx echo.Context, params GetParams) error {
-	rows, err := c.repo.Get(ctx.Request().Context(), params.Offset, params.Limit, params.Sort)
+func (s Server[T, R]) Get(ctx echo.Context, params GetParams) error {
+	rows, err := repo.Get[R](s.db.WithContext(ctx.Request().Context()), params.Offset, params.Limit, params.Sort)
 	if err != nil {
 		return err
 	}
 
 	result := make([]*T, 0, len(rows))
 	for _, row := range rows {
-		if res, err := c.encoder(row); err != nil {
+		if res, err := s.encoder(row); err != nil {
 			return err
 		} else {
 			result = append(result, res)
@@ -54,72 +54,72 @@ func (c Server[T, D]) Get(ctx echo.Context, params GetParams) error {
 	return ctx.JSON(http.StatusOK, result)
 }
 
-func (c Server[T, D]) Post(ctx echo.Context) error {
+func (s Server[T, R]) Post(ctx echo.Context) error {
 	var v *T
 	if err := ctx.Bind(&v); err != nil {
 		return err
 	}
 
-	row, err := c.decoder(v)
+	row, err := s.decoder(v)
 	if err != nil {
 		return err
 	}
 
-	row, err = c.repo.Create(ctx.Request().Context(), *row)
+	row, err = repo.Create[R](s.db.WithContext(ctx.Request().Context()), *row)
 	if err != nil {
 		return err
 	}
 
-	if res, err := c.encoder(row); err != nil {
+	if res, err := s.encoder(row); err != nil {
 		return err
 	} else {
 		return ctx.JSON(http.StatusCreated, res)
 	}
 }
 
-func (c Server[T, D]) DeleteID(ctx echo.Context, id uint64) error {
-	if err := c.repo.DeleteByID(ctx.Request().Context(), uint(id)); err != nil {
+func (s Server[T, R]) DeleteID(ctx echo.Context, id uint64) error {
+	if err := repo.DeleteByID[R](s.db.WithContext(ctx.Request().Context()), uint(id)); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-func (c Server[T, D]) GetByID(ctx echo.Context, id uint64) error {
-	v, err := c.repo.GetByID(ctx.Request().Context(), uint(id))
+func (s Server[T, R]) GetByID(ctx echo.Context, id uint64) error {
+	v, err := repo.GetByID[R](s.db.WithContext(ctx.Request().Context()), uint(id))
 	if err != nil {
 		return err
 	}
 
-	if res, err := c.encoder(v); err != nil {
+	if res, err := s.encoder(v); err != nil {
 		return err
 	} else {
 		return ctx.JSON(http.StatusOK, res)
 	}
 }
 
-func (c Server[T, D]) PatchByID(ctx echo.Context, id uint64) error {
+func (s Server[T, R]) PatchByID(ctx echo.Context, id uint64) error {
 	var m = make(echo.Map)
 	if err := ctx.Bind(&m); err != nil {
 		return err
 	}
-	if err := c.repo.Update(ctx.Request().Context(), uint(id), m); err != nil {
+	if err := repo.Update[R](s.db.WithContext(ctx.Request().Context()), uint(id), m); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusOK)
 }
 
-func (c Server[T, D]) PutByID(ctx echo.Context, id uint64) error {
+func (s Server[T, R]) PutByID(ctx echo.Context, id uint64) error {
 	var v T
 	if err := ctx.Bind(&v); err != nil {
 		return err
 	}
 
-	row, err := c.decoder(&v)
+	row, err := s.decoder(&v)
 	if err != nil {
 		return err
 	}
 
-	if err = c.repo.Replace(ctx.Request().Context(), uint(id), *row); err != nil {
+	if err = repo.Replace[R](s.db.WithContext(ctx.Request().Context()), uint(id), *row); err != nil {
 		return err
 	}
 	return ctx.NoContent(http.StatusOK)
