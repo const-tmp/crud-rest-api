@@ -10,9 +10,10 @@ import (
 
 // genCmd represents the gen command
 var genCmd = &cobra.Command{
-	Use:   "gen",
-	Short: "Generate resources",
-	Long:  `Generate OpenAPI3 spec from list of templates`,
+	Use:     "generate",
+	Aliases: []string{"gen", "g"},
+	Short:   "Generate resources",
+	Long:    `Generate OpenAPI3 spec from list of templates`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("gen called")
 

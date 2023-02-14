@@ -2,6 +2,7 @@ package generator
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"text/template"
@@ -24,12 +25,12 @@ func RenderTemplate(name, text string, dot any) (io.Reader, error) {
 func WriteFile(path string, reader io.Reader) error {
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return err
+		return fmt.Errorf("open %s error: %w", path, err)
 	}
 	defer file.Close()
 
 	if _, err = io.Copy(file, reader); err != nil {
-		return err
+		return fmt.Errorf("write %s error: %w", path, err)
 	}
 
 	return nil
