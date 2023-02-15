@@ -41,6 +41,7 @@ bootstrap /abs/path/to/dir
 
 		if err := bootstrap.GenFile(
 			path,
+			cmd.Flag("module").Value.String(),
 			cmd.Flag("api-package").Value.String(),
 			cmd.Flag("gen-package").Value.String(),
 			cmd.Flag("gen-out").Value.String(),
@@ -63,9 +64,11 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// bootstrapCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	bootstrapCmd.Flags().StringP("api-package", "a", "", "api package import path")
+	bootstrapCmd.Flags().StringP("module", "m", "", "module name")
+	bootstrapCmd.Flags().StringP("api-package", "a", "", "api package relative path")
 	bootstrapCmd.Flags().StringP("gen-package", "p", "", "oapi-codegen generated package name")
 	bootstrapCmd.Flags().StringP("gen-out", "o", "", "oapi-codegen out path")
+	_ = bootstrapCmd.MarkFlagRequired("module")
 	_ = bootstrapCmd.MarkFlagRequired("api-package")
 	_ = bootstrapCmd.MarkFlagRequired("gen-package")
 }

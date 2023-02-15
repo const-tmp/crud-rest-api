@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"github.com/nullc4t/crud-rest-api/pkg/generator"
+	"path/filepath"
 	"strings"
 )
 
@@ -50,7 +51,7 @@ func OpenAPIFiles(path string) error {
 	return nil
 }
 
-func GenFile(path, apiPkg, oapiPkg, out string) error {
+func GenFile(path, module, apiPkg, oapiPkg, out string) error {
 	if !strings.HasSuffix(path, "/") {
 		path += "/"
 	}
@@ -63,11 +64,14 @@ func GenFile(path, apiPkg, oapiPkg, out string) error {
 	if out == "" {
 		out = fmt.Sprintf("pkg/%s/%s.gen.go", oapiPkg, oapiPkg)
 	}
+	outDir := filepath.Dir(out)
 
 	reader, err := generator.RenderTemplate("gen.go", string(data), map[string]string{
+		"module":            module,
 		"api_package":       apiPkg,
 		"oapi_package_name": oapiPkg,
 		"oapi_out_file":     out,
+		"oapi_out_dir":      outDir,
 	})
 	if err != nil {
 		return err
