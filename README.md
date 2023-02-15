@@ -11,7 +11,7 @@ go install github.com/nullc4t/crud-rest-api@latest
 ## Bootstrap
 First, we need some bootstrap code
 ```
-crud-rest-api bootstrap
+crud-rest-api bootstrap -a github.com/nullc4t/crud-rest-api/api -p auth
 ```
 This will generate files:
 ```
