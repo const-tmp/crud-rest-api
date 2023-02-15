@@ -45,11 +45,12 @@ api
         ├── BaseModel.yaml
         ├── Error.yaml
         └── _index.yaml
+gen.go
 ```
 ## Generate
 ```
 crud-rest-api generate example-config.yaml
+go generate
 ```
-TODO: see [gen.go](gen.go) for example
 ## Implement server
 See [server implementation](internal/server/impl.go) and [run example](example/main.go)

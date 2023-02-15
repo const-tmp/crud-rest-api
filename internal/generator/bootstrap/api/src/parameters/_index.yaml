@@ -1,0 +1,11 @@
+# path
+id:
+  $ref: './path/id.yaml'
+
+# query
+limit:
+  $ref: './query/limit.yaml'
+offset:
+  $ref: './query/offset.yaml'
+sort:
+  $ref: './query/sort.yaml'

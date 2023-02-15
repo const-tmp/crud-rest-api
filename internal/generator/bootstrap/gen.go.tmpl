@@ -1,0 +1,4 @@
+package main
+
+//go:generate go generate {{ .api_package }}
+//go:generate oapi-codegen -package {{ .oapi_package_name }} -o {{ .oapi_out_file }} api/build/openapi.yaml

@@ -81,6 +81,7 @@ func (s Server[T, R]) DeleteID(ctx echo.Context, id uint64) error {
 	if err := repo.DeleteByID[R](s.db.WithContext(ctx.Request().Context()), uint(id)); err != nil {
 		return err
 	}
+	
 	return ctx.NoContent(http.StatusNoContent)
 }
 
@@ -102,9 +103,11 @@ func (s Server[T, R]) PatchByID(ctx echo.Context, id uint64) error {
 	if err := ctx.Bind(&m); err != nil {
 		return err
 	}
+
 	if err := repo.Update[R](s.db.WithContext(ctx.Request().Context()), uint(id), m); err != nil {
 		return err
 	}
+
 	return ctx.NoContent(http.StatusOK)
 }
 
@@ -122,5 +125,6 @@ func (s Server[T, R]) PutByID(ctx echo.Context, id uint64) error {
 	if err = repo.Replace[R](s.db.WithContext(ctx.Request().Context()), uint(id), *row); err != nil {
 		return err
 	}
+
 	return ctx.NoContent(http.StatusOK)
 }

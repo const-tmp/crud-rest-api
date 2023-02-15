@@ -11,12 +11,12 @@ import (
 func RenderTemplate(name, text string, dot any) (io.Reader, error) {
 	tmpl, err := template.New(name).Parse(text)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse %s error: %w", name, err)
 	}
 
 	buf := new(bytes.Buffer)
 	if err = tmpl.Execute(buf, dot); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("execute %s error: %w", name, err)
 	}
 
 	return buf, nil

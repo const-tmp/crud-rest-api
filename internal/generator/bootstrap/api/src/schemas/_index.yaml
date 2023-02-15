@@ -1,0 +1,8 @@
+BaseModel:
+    $ref: ./BaseModel.yaml
+Any:
+    $ref: ./Any.yaml
+AnyNull:
+    $ref: ./AnyNull.yaml
+Error:
+    $ref: ./Error.yaml

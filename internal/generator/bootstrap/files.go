@@ -1,62 +1,80 @@
 package bootstrap
 
 import (
+	"embed"
+	"fmt"
 	"github.com/nullc4t/crud-rest-api/pkg/generator"
 	"strings"
 )
 
-type OpenAPI3Source struct {
-	Path, Content string
-}
+//go:embed api/* api/src/parameters/_index.yaml api/src/responses/_index.yaml api/src/schemas/_index.yaml gen.go.tmpl
+var f embed.FS
 
-var (
-	Spec = OpenAPI3Source{
-		Path: "api/src/openapi.yaml",
-		Content: `openapi: 3.0.3
-info:
-    title: CRUD API
-    description: CRUD API
-    version: 1.0.0
-servers:
-    - url: http://localhost:8080
-      description: Dev
-paths:
-
-components:
-    parameters:
-        $ref: ./parameters/_index.yaml
-    responses:
-        $ref: ./responses/_index.yaml
-    schemas:
-        $ref: ./schemas/_index.yaml
-`,
-	}
-
-	Gen = OpenAPI3Source{
-		Path: "api/gen.go",
-		Content: `package api
-
-//go:generate swagger-cli bundle src/openapi.yaml --outfile build/openapi.yaml --type yaml
-`,
-	}
-)
-
-func Files(path string) error {
+func OpenAPIFiles(path string) error {
 	if !strings.HasSuffix(path, "/") {
 		path += "/"
 	}
 
-	var src []OpenAPI3Source
+	files := []string{
+		"api/src/openapi.yaml",
+		"api/gen.go",
+		"api/src/parameters/_index.yaml",
+		"api/src/parameters/path/id.yaml",
+		"api/src/parameters/query/limit.yaml",
+		"api/src/parameters/query/offset.yaml",
+		"api/src/parameters/query/sort.yaml",
+		"api/src/responses/_index.yaml",
+		"api/src/responses/OK.yaml",
+		"api/src/responses/Created.yaml",
+		"api/src/responses/NoContent.yaml",
+		"api/src/responses/NullResponse.yaml",
+		"api/src/responses/BadRequest.yaml",
+		"api/src/responses/Unauthorized.yaml",
+		"api/src/responses/NotFound.yaml",
+		"api/src/responses/UnexpectedError.yaml",
+		"api/src/schemas/_index.yaml",
+		"api/src/schemas/BaseModel.yaml",
+		"api/src/schemas/Any.yaml",
+		"api/src/schemas/AnyNull.yaml",
+		"api/src/schemas/Error.yaml",
+	}
 
-	src = append(src, Parameters...)
-	src = append(src, Schemas...)
-	src = append(src, Responses...)
-	src = append(src, Spec, Gen)
-
-	for _, source := range src {
-		if err := generator.WriteFile(path+source.Path, strings.NewReader(source.Content)); err != nil {
+	for _, name := range files {
+		if file, err := f.Open(name); err != nil {
+			return fmt.Errorf("open %s error: %w", name, err)
+		} else if err = generator.WriteFile(path+name, file); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func GenFile(path, apiPkg, oapiPkg, out string) error {
+	if !strings.HasSuffix(path, "/") {
+		path += "/"
+	}
+
+	data, err := f.ReadFile("gen.go.tmpl")
+	if err != nil {
+		return fmt.Errorf("read gen.go.tmpl error: %w", err)
+	}
+
+	if out == "" {
+		out = fmt.Sprintf("pkg/%s/%s.gen.go", oapiPkg, oapiPkg)
+	}
+
+	reader, err := generator.RenderTemplate("gen.go", string(data), map[string]string{
+		"api_package":       apiPkg,
+		"oapi_package_name": oapiPkg,
+		"oapi_out_file":     out,
+	})
+	if err != nil {
+		return err
+	}
+
+	if err = generator.WriteFile(path+"gen.go", reader); err != nil {
+		return err
 	}
 
 	return nil

@@ -1,0 +1,16 @@
+OK:
+  $ref: "./OK.yaml"
+Created:
+  $ref: "./Created.yaml"
+NoContent:
+  $ref: "./NoContent.yaml"
+NullResponse:
+  $ref: "./NullResponse.yaml"
+BadRequest:
+  $ref: "./BadRequest.yaml"
+Unauthorized:
+  $ref: "./Unauthorized.yaml"
+NotFound:
+  $ref: "./NotFound.yaml"
+UnexpectedError:
+  $ref: "./UnexpectedError.yaml"
