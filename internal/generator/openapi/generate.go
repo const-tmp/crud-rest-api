@@ -52,7 +52,7 @@ func Generate(src string, resources []TemplateData) error {
 			return err
 		}
 
-		AddPaths(*spec, resource.Resource)
+		AddPaths(spec, resource.Resource)
 	}
 
 	if err = WriteYAMLFile(src+"openapi.yaml", spec); err != nil {
@@ -147,8 +147,12 @@ func GenerateResource(resource TemplateData, path string) error {
 	return nil
 }
 
-func AddPaths(spec common.OpenAPI3, resourceName string) {
+func AddPaths(spec *common.OpenAPI3, resourceName string) {
 	resourcePath := "./paths/" + resourceName
+
+	if spec.Paths == nil {
+		spec.Paths = make(map[string]map[string]common.Ref)
+	}
 
 	if path, ok := spec.Paths["/"+resourceName]; ok {
 		path["get"] = common.Ref{Ref: resourcePath + "/get.yaml"}
