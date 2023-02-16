@@ -31,6 +31,7 @@ func OpenAPIFiles(path string) error {
 		"api/src/responses/NullResponse.yaml",
 		"api/src/responses/BadRequest.yaml",
 		"api/src/responses/Unauthorized.yaml",
+		"api/src/responses/Forbidden.yaml",
 		"api/src/responses/NotFound.yaml",
 		"api/src/responses/UnexpectedError.yaml",
 		"api/src/schemas/_index.yaml",
