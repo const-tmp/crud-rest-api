@@ -1,6 +1,7 @@
 package openapi
 
 import (
+	"embed"
 	"errors"
 	"fmt"
 	"github.com/nullc4t/crud-rest-api/pkg/common"
@@ -125,22 +126,33 @@ func ReadTemplateData(path string) ([]TemplateData, error) {
 	return td, nil
 }
 
+//go:embed routes/*
+var f embed.FS
+
 func GenerateResource(resource TemplateData, path string) error {
-	units := []RenderUnit{
-		{Get, path + "/get.yaml"},
-		{Post, path + "/post.yaml"},
-		{GetByID, path + "/{id}/get.yaml"},
-		{Put, path + "/{id}/put.yaml"},
-		{Patch, path + "/{id}/patch.yaml"},
-		{Delete, path + "/{id}/delete.yaml"},
+	tmplPrefix := "routes"
+	routes := []string{
+		"/get.yaml",
+		"/post.yaml",
+		"/{id}/get.yaml",
+		"/{id}/put.yaml",
+		"/{id}/patch.yaml",
+		"/{id}/delete.yaml",
 	}
-	for _, unit := range units {
-		if reader, err := unit.Template(resource); err != nil {
-			return fmt.Errorf("template %s execution error: %w", unit.Path, err)
-		} else {
-			if err = generator.WriteFile(unit.Path, reader); err != nil {
-				return fmt.Errorf("write %s error: %w", unit.Path, err)
-			}
+
+	for _, route := range routes {
+		data, err := f.ReadFile(tmplPrefix + route)
+		if err != nil {
+			return fmt.Errorf("read %s error: %w", path+route, err)
+		}
+
+		reader, err := generator.RenderTemplate(route, string(data), resource)
+		if err != nil {
+			return fmt.Errorf("render %s error: %w", path+route, err)
+		}
+
+		if err = generator.WriteFile(path+route, reader); err != nil {
+			return fmt.Errorf("write %s error: %w", path+route, err)
 		}
 	}
 

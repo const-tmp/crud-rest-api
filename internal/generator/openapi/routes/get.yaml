@@ -1,0 +1,23 @@
+summary: Return list of {{ .Schema }}
+tags:
+  - {{ .Tag }}
+description: Optional extended description in CommonMark or HTML
+parameters:
+  - $ref: '../../parameters/query/offset.yaml'
+  - $ref: '../../parameters/query/limit.yaml'
+  - $ref: '../../parameters/query/sort.yaml'
+responses:
+  200:
+    description: A JSON array of {{ .Schema }}
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: '../../schemas/{{ .Schema }}.yaml'
+  401:
+    $ref: '../../responses/Unauthorized.yaml'
+  403:
+    $ref: '../../responses/Forbidden.yaml'
+  500:
+    $ref: '../../responses/UnexpectedError.yaml'
