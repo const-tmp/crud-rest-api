@@ -4,13 +4,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/nullc4t/crud-rest-api/pkg/common"
 	"github.com/nullc4t/crud-rest-api/pkg/repo"
+	gormrepo "github.com/nullc4t/crud-rest-api/pkg/repo/gorm"
 	"gorm.io/gorm"
 	"net/http"
 )
 
 type (
 	Server[T, R any] struct {
-		db      *gorm.DB
+		repo    repo.Interface[R]
 		decoder common.TransformFunc[T, R]
 		encoder common.TransformFunc[R, T]
 	}
@@ -30,14 +31,14 @@ type (
 
 func New[T, R any](db *gorm.DB, decoder common.TransformFunc[T, R], encoder common.TransformFunc[R, T]) *Server[T, R] {
 	return &Server[T, R]{
-		db:      db,
+		repo:    gormrepo.New[R](db),
 		encoder: encoder,
 		decoder: decoder,
 	}
 }
 
 func (s Server[T, R]) Get(ctx echo.Context, params GetParams) error {
-	rows, err := repo.Get[R](s.db.WithContext(ctx.Request().Context()), params.Offset, params.Limit, params.Sort)
+	rows, err := s.repo.Get(ctx.Request().Context(), params.Offset, params.Limit, params.Sort)
 	if err != nil {
 		return err
 	}
@@ -65,7 +66,7 @@ func (s Server[T, R]) Post(ctx echo.Context) error {
 		return err
 	}
 
-	row, err = repo.Create[R](s.db.WithContext(ctx.Request().Context()), *row)
+	row, err = s.repo.Create(ctx.Request().Context(), *row)
 	if err != nil {
 		return err
 	}
@@ -78,15 +79,15 @@ func (s Server[T, R]) Post(ctx echo.Context) error {
 }
 
 func (s Server[T, R]) DeleteID(ctx echo.Context, id uint64) error {
-	if err := repo.DeleteByID[R](s.db.WithContext(ctx.Request().Context()), uint(id)); err != nil {
+	if err := s.repo.DeleteByID(ctx.Request().Context(), uint(id)); err != nil {
 		return err
 	}
-	
+
 	return ctx.NoContent(http.StatusNoContent)
 }
 
 func (s Server[T, R]) GetByID(ctx echo.Context, id uint64) error {
-	v, err := repo.GetByID[R](s.db.WithContext(ctx.Request().Context()), uint(id))
+	v, err := s.repo.GetByID(ctx.Request().Context(), uint(id))
 	if err != nil {
 		return err
 	}
@@ -104,7 +105,7 @@ func (s Server[T, R]) PatchByID(ctx echo.Context, id uint64) error {
 		return err
 	}
 
-	if err := repo.Update[R](s.db.WithContext(ctx.Request().Context()), uint(id), m); err != nil {
+	if err := s.repo.Update(ctx.Request().Context(), uint(id), m); err != nil {
 		return err
 	}
 
@@ -122,7 +123,7 @@ func (s Server[T, R]) PutByID(ctx echo.Context, id uint64) error {
 		return err
 	}
 
-	if err = repo.Replace[R](s.db.WithContext(ctx.Request().Context()), uint(id), *row); err != nil {
+	if err = s.repo.Replace(ctx.Request().Context(), uint(id), *row); err != nil {
 		return err
 	}
 

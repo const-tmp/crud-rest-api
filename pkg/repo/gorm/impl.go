@@ -1,12 +1,11 @@
-package repo
+package gorm
 
 import (
+	"github.com/nullc4t/crud-rest-api/pkg/repo"
 	"gorm.io/gorm"
 )
 
-type Sort map[string]string
-
-func Get[T any](db *gorm.DB, offset, limit *uint32, sort *Sort) ([]*T, error) {
+func Get[T any](db *gorm.DB, offset, limit *uint32, sort *repo.Sort) ([]*T, error) {
 	var (
 		v    []*T
 		stmt = db

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/nullc4t/crud-rest-api/internal/server"
+	"github.com/nullc4t/crud-rest-api/example/server"
 	"github.com/nullc4t/crud-rest-api/pkg/auth"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
